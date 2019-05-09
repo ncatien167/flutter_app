@@ -4,6 +4,10 @@ import 'Models/ListMovie.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
+import 'package:flutter_advanced_networkimage/transition.dart';
+import 'package:flutter_advanced_networkimage/zoomable.dart';
+import 'MovieDetail.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,18 +18,53 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   Response data;
-  List<ListMoive> listMovie = List<ListMoive>();
   int page = 1;
+
+  List<ListMoive> listMovie = List<ListMoive>();
+  List<ListMoive> listMovieComingSoon = List<ListMoive>();
+  Future<List<ListMoive>> movies;
+
   final ScrollController scrollController = new ScrollController();
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
     super.initState();
-        listenForMovies();
+    getListMoiveComingSoon();
+    getListMoivePopular();
+    movies = MovieDBApi().getListMovie('1');
+    print(movies);
   }
 
   @override
   Widget build(BuildContext context) {
+
+    final gridMovies = new GridView.builder(
+      itemCount: listMovie.length,
+      primary: true,
+      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+          childAspectRatio: 500 / 750,
+          crossAxisCount: 2),
+      itemBuilder: (BuildContext context, int index) {
+        return new GestureDetector(
+          child: new Card(
+            color: Colors.black,
+            elevation: 0.0,
+            child: _itemWidget(index),
+          ),
+          onTap: () {
+            _onTapLogin(context);
+          },
+        );
+      },
+    );
+
+    final refreshIndicator = new RefreshIndicator(
+      key: refreshKey,
+      child: gridMovies,
+      onRefresh: refreshList,
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
@@ -37,25 +76,47 @@ class _HomePageState extends State<HomePage> {
               loadMore();
             }
           },
-            child: GridView.builder(
-              itemCount: listMovie.length,
-              primary: true,
-              gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                  childAspectRatio: 500 / 750,
-                  crossAxisCount: 2),
-              itemBuilder: (BuildContext context, int index) {
-                return new GestureDetector(
-                  child: new Card(
-                    color: Colors.black,
-                    elevation: 0.0,
-                    child: _itemWidget(index),
-                  ),
-                );
-              },
-            )
+          child: refreshIndicator,
         ),
       ),
     );
+  }
+
+  Future<List<ListMoive>> getListMoivePopular() async {
+    final response = await http.get('https://api.themoviedb.org/3/movie/popular?api_key=ee8cf966d22254270f6faa1948ecf3fc&language=en-US&page=$page');
+    if (response.statusCode == 200) {
+      Map dataRes = jsonDecode(response.body);
+      var res = new Response.fromJSON(dataRes);
+
+      setState(() {
+        for (var i = 0; i<res.results.length; i++) {
+          var movie = ListMoive.fromJSON(res.results[i]);
+          listMovie.add(movie);
+        }
+      });
+      return listMovie;
+    } else {
+      throw Exception('Failed to load photos');
+    }
+  }
+
+  Future<List<ListMoive>> getListMoiveComingSoon() async {
+    final response = await http.get('https://api.themoviedb.org/3/movie/popular?api_key=ee8cf966d22254270f6faa1948ecf3fc&language=en-US&page=$page');
+    if (response.statusCode == 200) {
+      Map dataRes = jsonDecode(response.body);
+      var res = new Response.fromJSON(dataRes);
+
+      setState(() {
+        for (var i = 0; i<res.results.length; i++) {
+          var movie = ListMoive.fromJSON(res.results[i]);
+          listMovieComingSoon.add(movie);
+        }
+      });
+
+      return listMovieComingSoon;
+    } else {
+      throw Exception('Failed to load photos');
+    }
   }
 
   Widget _itemWidget(index) {
@@ -78,11 +139,9 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            child: CachedNetworkImage(
-              imageUrl: 'https://image.tmdb.org/t/p/w500' + listMovie[index].posterPath,
-              placeholder: (context, url) => new CircularProgressIndicator(),
-              errorWidget: (context, url, error) => new Icon(Icons.error),
-            ),
+            child: TransitionToImage(image: AdvancedNetworkImage(
+              'https://image.tmdb.org/t/p/w500' + listMovie[index].posterPath,
+            )),
           ),
           Container(
             alignment: Alignment.bottomLeft,
@@ -112,29 +171,24 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void listenForMovies() async {
-    final String url = 'https://api.themoviedb.org/3/movie/popular?api_key=ee8cf966d22254270f6faa1948ecf3fc&language=en-US&page=$page';
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      Map dataRes = jsonDecode(response.body);
-      var res = new Response.fromJSON(dataRes);
-
-      setState(() {
-        for (var i = 0; i<res.results.length; i++) {
-          var movie = ListMoive.fromJSON(res.results[i]);
-          listMovie.add(movie);
-        }
-      });
-    } else {
-      throw Exception('Failed to load photos');
-    }
+  Future<Null> refreshList() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 1));
+    refresh();
+    return null;
   }
 
   void loadMore() {
     page += 1;
     print('Page number: $page');
     print('Number Item: ${listMovie.length}');
-    listenForMovies();
+    getListMoivePopular();
+  }
+
+  void refresh() {
+    page = 1;
+    listMovie.clear();
+    getListMoivePopular();
   }
 
   bool onNotification(ScrollNotification notification) {
@@ -146,6 +200,13 @@ class _HomePageState extends State<HomePage> {
       }
     }
     return true;
+  }
+
+  void _onTapLogin(BuildContext context) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) {
+      return MovieDetailPage();
+    }));
   }
 
 }
