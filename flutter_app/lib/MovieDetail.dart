@@ -14,6 +14,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Something'),
+        backgroundColor: Color(0xFF151026),
       ),
       body: Container(
         color: Colors.red,

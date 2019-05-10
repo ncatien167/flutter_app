@@ -6,14 +6,17 @@ import '../Configs/Constant.dart';
 
 class MovieDBApi {
 
-  static final String baseUrl = 'https://api.themoviedb.org/3/movie/popular?api_key=ee8cf966d22254270f6faa1948ecf3fc&language=en-US&page=$page'';
+  static final String baseUrl = 'api.themoviedb.org';
   final apiKey = 'ee8cf966d22254270f6faa1948ecf3fc';
 
   Future<List<ListMoive>> getListMovie(String page) async {
 
     List<ListMoive> listMovie = List<ListMoive>();
 
-    final movieUri = Uri.https(baseUrl);
+    final movieUri = Uri.https(baseUrl, '3/movie/popular', {
+      'api_key' : apiKey,
+      'page' : page,
+    });
 
     final response = await http.Client().get(movieUri);
 

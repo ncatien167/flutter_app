@@ -30,10 +30,11 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    getListMoiveComingSoon();
-    getListMoivePopular();
-    movies = MovieDBApi().getListMovie('1');
-    print(movies);
+    MovieDBApi().getListMovie('$page').then((value) {
+      setState(() {
+        listMovie = value;
+      });
+    });
   }
 
   @override
@@ -68,6 +69,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
+        backgroundColor: Color(0xFF151026),
       ),
       body: SafeArea(
         child: NotificationListener<ScrollNotification>(
@@ -80,43 +82,6 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-  }
-
-  Future<List<ListMoive>> getListMoivePopular() async {
-    final response = await http.get('https://api.themoviedb.org/3/movie/popular?api_key=ee8cf966d22254270f6faa1948ecf3fc&language=en-US&page=$page');
-    if (response.statusCode == 200) {
-      Map dataRes = jsonDecode(response.body);
-      var res = new Response.fromJSON(dataRes);
-
-      setState(() {
-        for (var i = 0; i<res.results.length; i++) {
-          var movie = ListMoive.fromJSON(res.results[i]);
-          listMovie.add(movie);
-        }
-      });
-      return listMovie;
-    } else {
-      throw Exception('Failed to load photos');
-    }
-  }
-
-  Future<List<ListMoive>> getListMoiveComingSoon() async {
-    final response = await http.get('https://api.themoviedb.org/3/movie/popular?api_key=ee8cf966d22254270f6faa1948ecf3fc&language=en-US&page=$page');
-    if (response.statusCode == 200) {
-      Map dataRes = jsonDecode(response.body);
-      var res = new Response.fromJSON(dataRes);
-
-      setState(() {
-        for (var i = 0; i<res.results.length; i++) {
-          var movie = ListMoive.fromJSON(res.results[i]);
-          listMovieComingSoon.add(movie);
-        }
-      });
-
-      return listMovieComingSoon;
-    } else {
-      throw Exception('Failed to load photos');
-    }
   }
 
   Widget _itemWidget(index) {
@@ -180,15 +145,21 @@ class _HomePageState extends State<HomePage> {
 
   void loadMore() {
     page += 1;
-    print('Page number: $page');
-    print('Number Item: ${listMovie.length}');
-    getListMoivePopular();
+    MovieDBApi().getListMovie('$page').then((value) {
+      setState(() {
+        listMovie.addAll(value);
+      });
+    });
   }
 
   void refresh() {
     page = 1;
     listMovie.clear();
-    getListMoivePopular();
+    MovieDBApi().getListMovie('$page').then((value) {
+      setState(() {
+        listMovie = value;
+      });
+    });
   }
 
   bool onNotification(ScrollNotification notification) {
