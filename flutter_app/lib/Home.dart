@@ -20,9 +20,9 @@ class _HomePageState extends State<HomePage> {
   Response data;
   int page = 1;
 
-  List<ListMoive> listMovie = List<ListMoive>();
-  List<ListMoive> listMovieComingSoon = List<ListMoive>();
-  Future<List<ListMoive>> movies;
+  List<ListMovie> listMovie = List<ListMovie>();
+  List<ListMovie> listMovieComingSoon = List<ListMovie>();
+  Future<List<ListMovie>> movies;
 
   final ScrollController scrollController = new ScrollController();
   var refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -88,9 +88,6 @@ class _HomePageState extends State<HomePage> {
     return SizedBox(
       child: Stack(
         children: <Widget>[
-          Container(
-            color: Colors.green,
-          ),
           Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(

@@ -19,13 +19,13 @@ class Response {
   };
 }
 
-class ListMoive {
+class ListMovie {
   final String title;
   final String posterPath;
   final String overview;
   final List genreIds;
 
-  ListMoive.fromJSON(Map<String, dynamic> jsonMap) :
+  ListMovie.fromJSON(Map<String, dynamic> jsonMap) :
         title = jsonMap['title'],
         posterPath = jsonMap['poster_path'],
         overview = jsonMap['overview'],

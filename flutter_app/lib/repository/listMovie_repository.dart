@@ -9,9 +9,9 @@ class MovieDBApi {
   static final String baseUrl = 'api.themoviedb.org';
   final apiKey = 'ee8cf966d22254270f6faa1948ecf3fc';
 
-  Future<List<ListMoive>> getListMovie(String page) async {
+  Future<List<ListMovie>> getListMovie(String page) async {
 
-    List<ListMoive> listMovie = List<ListMoive>();
+    List<ListMovie> listMovie = List<ListMovie>();
 
     final movieUri = Uri.https(baseUrl, '3/movie/popular', {
       'api_key' : apiKey,
@@ -26,7 +26,7 @@ class MovieDBApi {
       var res = new Response.fromJSON(dataRes);
 
       for (var i = 0; i<res.results.length; i++) {
-        var movie = ListMoive.fromJSON(res.results[i]);
+        var movie = ListMovie.fromJSON(res.results[i]);
         listMovie.add(movie);
       }
 
