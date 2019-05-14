@@ -20,9 +20,9 @@ class _HomePageState extends State<HomePage> {
   Response data;
   int page = 1;
 
-  List<ListMovie> listMovie = List<ListMovie>();
-  List<ListMovie> listMovieComingSoon = List<ListMovie>();
-  Future<List<ListMovie>> movies;
+  List<Movie> listMovie = List<Movie>();
+  List<Movie> listMovieComingSoon = List<Movie>();
+  Future<List<Movie>> movies;
 
   final ScrollController scrollController = new ScrollController();
   var refreshKey = GlobalKey<RefreshIndicatorState>();

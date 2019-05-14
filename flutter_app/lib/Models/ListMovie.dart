@@ -19,22 +19,25 @@ class Response {
   };
 }
 
-class ListMovie {
+class Movie {
   final String title;
   final String posterPath;
   final String overview;
+  final String backdropPath;
   final List genreIds;
 
-  ListMovie.fromJSON(Map<String, dynamic> jsonMap) :
+  Movie.fromJSON(Map<String, dynamic> jsonMap) :
         title = jsonMap['title'],
         posterPath = jsonMap['poster_path'],
         overview = jsonMap['overview'],
-        genreIds = jsonMap['genre_ids'];
+        genreIds = jsonMap['genre_ids'],
+        backdropPath = jsonMap['backdrop_path'];
 
   Map<String, dynamic> toJson() => {
     'title' : title,
     'poster_path' : posterPath,
     'overview' : overview,
-    'genre_ids': genreIds,
+    'genre_ids': genreIds, 
+    'backdrop_path': backdropPath,
   };
 }

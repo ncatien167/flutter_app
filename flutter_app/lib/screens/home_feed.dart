@@ -3,6 +3,7 @@ import 'package:flutter_app/Models/ListMovie.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_advanced_networkimage/transition.dart';
 import 'package:flutter_app/repository/listMovie_repository.dart';
+import 'package:flutter_app/screens/feed_detail.dart';
 
 class HomeFeed extends StatefulWidget {
   @override
@@ -13,7 +14,7 @@ class HomeFeed extends StatefulWidget {
 
 class HomeFeedState extends State<HomeFeed> {
 
-  List<ListMovie> listMovie = List<ListMovie>();
+  List<Movie> listMovie = List<Movie>();
   
   // ScrollController to check load more
   ScrollController scrollController = new ScrollController();
@@ -67,6 +68,9 @@ class HomeFeedState extends State<HomeFeed> {
             elevation: 0.0,
             child: gridViewItemWith(index),
           ),
+          onTap: () {
+            _onTapMovieItem(context, listMovie[index]);
+          },
         );
       },
     );
@@ -137,6 +141,13 @@ class HomeFeedState extends State<HomeFeed> {
         }
       });
     });
+  }
+
+// Action
+  void _onTapMovieItem(BuildContext context, Movie movie) {
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) => MovieDetail(movie: movie,)
+    ));
   }
 
 }
