@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/Models/ListMovie.dart';
 import 'package:flutter_app/repository/listMovie_repository.dart';
 import 'package:flutter_app/screens/feed_detail.dart';
+import 'home_bloc.dart';
 
 class HomeFeed extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class HomeFeed extends StatefulWidget {
 
 class HomeFeedState extends State<HomeFeed> {
 
+  final bloc = MovieBloc();
   List<Movie> listMovie = List<Movie>();
 
   // ScrollController to check load more
@@ -26,6 +28,11 @@ class HomeFeedState extends State<HomeFeed> {
   void initState() {
     super.initState();
     getListMovie(false);
+  }
+
+  @override
+  void dispose() {
+    bloc.dispose();
   }
 
   @override
@@ -92,9 +99,9 @@ class HomeFeedState extends State<HomeFeed> {
               ),
             ),
             child: (
-              Image.network(
-                'https://image.tmdb.org/t/p/w500' + listMovie[index].posterPath,
-              )
+                Image.network(
+                  'https://image.tmdb.org/t/p/w500' + listMovie[index].posterPath,
+                )
             ),
           ),
           Container(
@@ -143,7 +150,7 @@ class HomeFeedState extends State<HomeFeed> {
 // Action
   void _onTapMovieItem(BuildContext context, Movie movie) {
     Navigator.push(context, MaterialPageRoute(
-      builder: (context) => MovieDetail(movie: movie,)
+        builder: (context) => MovieDetail(movie: movie,)
     ));
   }
 

@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Models/ListMovie.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
-import 'package:flutter_advanced_networkimage/transition.dart';
 
 class MovieDetail extends StatefulWidget {
 
   final Movie movie;
 
   MovieDetail({this.movie});
-  
+
   @override
   State<StatefulWidget> createState() {
     return MovieDetailState(movie);
   }
-  
+
 }
 
 class MovieDetailState extends State<MovieDetail> {
-  
+
   MovieDetailState(this.movie);
   final Movie movie;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,11 +50,8 @@ class MovieDetailState extends State<MovieDetail> {
 
   SizedBox imagebackDrop() {
     return SizedBox(
-      child: TransitionToImage(
-        image: AdvancedNetworkImage(
-          'https://image.tmdb.org/t/p/w500' + movie.backdropPath,
-          useDiskCache: true,
-        ),
+      child: Image.network(
+        'https://image.tmdb.org/t/p/w500' + movie.backdropPath,
       ),
     );
   }
@@ -89,11 +84,8 @@ class MovieDetailState extends State<MovieDetail> {
   Container imagePoster() {
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 200, 10, 10),
-      child: TransitionToImage(
-        image: AdvancedNetworkImage(
-          'https://image.tmdb.org/t/p/w500' + movie.posterPath,
-          useDiskCache: true,
-        ),
+      child: Image.network(
+        'https://image.tmdb.org/t/p/w500' + movie.posterPath,
       ),
     );
   }
@@ -141,7 +133,7 @@ class MovieDetailState extends State<MovieDetail> {
           ),
         ],
       ),
-    ); 
+    );
   }
 
   Widget _buildListGenre() {
@@ -159,13 +151,8 @@ class MovieDetailState extends State<MovieDetail> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  TransitionToImage(
-                    borderRadius: BorderRadius.all(Radius.circular(70.0)),
-                    image: AdvancedNetworkImage(
-                      'https://image.tmdb.org/t/p/w500' + movie.posterPath,
-                      useDiskCache: true,
-                      scale: 10
-                    ),
+                  Image.network(
+                    'https://image.tmdb.org/t/p/w500' + movie.posterPath,
                   ),
                   Container(
             padding: const EdgeInsets.only(bottom: 3),

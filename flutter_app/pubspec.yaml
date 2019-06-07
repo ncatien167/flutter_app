@@ -20,10 +20,11 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^0.1.2
-  http: ^0.12.0
-  cached_network_image: ^0.7.0
-  loadmore: ^1.0.3
-  flutter_advanced_networkimage: ^0.4.15
+  flutter_svg: ^0.13.0+2
+  flutter_advanced_networkimage:
+  bloc: ^0.14.1
+  dio: ^2.1.6
+  rxdart: ^0.22.0
 
 dev_dependencies:
   flutter_test:

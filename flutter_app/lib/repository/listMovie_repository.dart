@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 import '../Models/ListMovie.dart';
-import '../Configs/Constant.dart';
+import '../appconfigs/Constant.dart';
 
 class MovieDBApi {
 
